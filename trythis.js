@@ -1,7 +1,7 @@
 const myAge = 18;
 
 if (myAge >= 18) {
-    console.log('adult');
+  console.log('adult');
 } else {
-    console.log('minor');
+  console.log('minor');
 }
