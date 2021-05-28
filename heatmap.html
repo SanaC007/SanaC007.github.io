@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Heat Map</title>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <script src="crime_2012_december.json" ></script>    
+    <style>
+        /* body { margin: 0; padding: 0; } */
+        #mapchicago { position: absolute; top: 0px; bottom: 0px; left: 0px; width: 100%; height: 100%;}
+    </style>
+</head>
+<body>
+
+<div id="mapchicago"></div>
+
+<script>
+
+mapboxgl.accessToken =
+'pk.eyJ1IjoibWFsLXdvb2QiLCJhIjoiY2oyZ2t2em50MDAyMzJ3cnltMDFhb2NzdiJ9.X-D4Wvo5E5QxeP7K_I3O8w';
+
+var map = new mapboxgl.Map({
+    container: 'mapchicago',
+    style: 'mapbox://styles/mapbox/dark-v10',
+    center: [-87.624225, 41.873941],
+    zoom: 12
+});
+
+map.on('load', function() {
+
+    const crimes = [];
+    chicago.data.forEach((crime,i) =>{
+        crimes.push({ 
+            "type":"Feature",
+            "properties":{"dbh":(60*(Math.random()))},
+            "geometry":{
+                "type":"Point",
+                "coordinates":[crime[28],crime[26]]
+            }
+        });            
+    });
+
+    const geojson = {
+        "type":"FeatureCollection","features":crimes
+    };
+
+
+    map.addSource('crime', {
+      'type': 'geojson',
+      'data': geojson
+    });
+
+    map.addLayer(
+      {
+        'id': 'crime-heat',
+        'type': 'heatmap',
+        'source': 'crime',
+        'maxzoom': 15,
+        'paint': {
+          // increase weight as diameter increases
+          'heatmap-weight': {
+            'property': 'dbh',
+            'type': 'exponential',
+            'stops': [
+              [1, 0],
+              [62, 1]
+            ]
+          },
+          // increase intensity as zoom level increases
+          'heatmap-intensity': {
+            'stops': [
+              [11, 1],
+              [15, 3]
+            ]
+          },
+          // use sequential color palette to use exponentially as the weight increases
+          'heatmap-color': [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            0,
+            'rgba(33,102,172,0)',
+            0.2,
+            'rgb(103,169,207)',
+            0.4,
+            'rgb(209,229,240)',
+            0.6,
+            'rgb(253,219,199)',
+            0.8,
+            'rgb(239,138,98)',
+            1,
+            'rgb(178,24,43)'
+          ],
+          // increase radius as zoom increases
+          'heatmap-radius': {
+            'stops': [
+              [11, 15],
+              [15, 20]
+            ]
+          },
+          // decrease opacity to transition into the circle layer
+          'heatmap-opacity': {
+            'default': 1,
+            'stops': [
+              [14, 1],
+              [15, 0]
+            ]
+          }
+        }
+      },
+      'waterway-label'
+    );
+
+
+  });
+
+
+</script>
+</body>
+</html>
