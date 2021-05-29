@@ -180,7 +180,7 @@ function getMarker(id){
 	return marker;
 }
 
-window.onload = init();
+window.onload = init(); 
 
 // mapbox bus traker end --------------------------------------------------
 
