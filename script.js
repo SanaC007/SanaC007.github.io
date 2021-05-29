@@ -104,8 +104,6 @@ var markers = [];
 
 // load map
 function init(){
-  var directionsService = new google.maps.DirectionsService();
-  directionsDisplay = new google.maps.DirectionsRenderer();
 	var myOptions = {
 		zoom      : 14,
 		center    : { lat:42.353350,lng:-71.091525},
@@ -114,7 +112,6 @@ function init(){
 	var element = document.getElementById('bustraker');
   	map = new google.maps.Map(element, myOptions);
   	addMarkers();
-  directionsDisplay.setMap(map);
 }
 // Add bus markers to map
 async function addMarkers(){
